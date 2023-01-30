@@ -12,7 +12,7 @@ jobs:
       - name: Use NodeJS
         uses: actions/setup-node@v1
         with:
-          node-version: "18.x"
+          node-version: '18.x'
       - run: npm ci
       - run: npm run format:C
       - run: npm test -- --coverage
