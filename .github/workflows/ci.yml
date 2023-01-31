@@ -38,7 +38,8 @@ jobs:
           name: code-coverage
           path: coverage
 
-      - name: Build Project
+      - name:
+          Build Project
           # Check the event tipe with an IF condition, if we push we run this job!
         if: github.event_name == 'push'
         run: npm run build
