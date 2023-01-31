@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [develop]
+  push:
+    branches: [develop]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use NodeJS
+        uses: actions/setup-node@v1
+        with:
+          node-version: '18.x'
+      - run: npm ci
+      - run: npm run format:C
+      - run: npm test -- --coverage
+        env:
+          CI: true
+
+      - name:
+          Build Project
+          # Check the event tipe with an IF condition, if we push we run this job!
+        if: github.event_name == 'push'
+        run: npm run build
+
+      - name:
+          Deploy to Staging
+          # We deploy the code to the staging env NOT the production!
+        if:
+          github.event_name == 'push'
+          # We push the code to SURGE, and use the URL provided previously when set up local env
+        run:
+          npx surge --project ./build --domain ad-brick.surge.sh
+          # We provide the env.var for SURGE, so we can authenticate, the token is generated in development by running "surge token" in terminal
+        env:
+          SURGE_LOGIN: ${{ secrets.SURGE_LOGIN }}
+          SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
