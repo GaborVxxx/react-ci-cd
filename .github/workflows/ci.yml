@@ -2,9 +2,9 @@ name: CI
 
 on:
   pull_request:
-    branches: [develop]
+    branches: [develop, main]
   push:
-    branches: [develop]
+    branches: [develop, main]
 
 jobs:
   build:
@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-        #The step bellow will try to cache the dependency
+        # The step bellow will try to cache the dependency
       - name: Cache node_modules
         uses: actions/cache@v3
         with:
@@ -31,11 +31,33 @@ jobs:
         env:
           CI: true
 
+        # Upload a code test coverage to a folder in project
+      - name: Upload Test Coverage
+        uses: actions/upload-artifact@v1
+        with:
+          name: code-coverage
+          path: coverage
+
       - name:
           Build Project
-          # Check the event tipe with an IF condition, if we push we run this job!
+          # Check the event type with an IF condition, if we push we run this job!
         if: github.event_name == 'push'
         run: npm run build
+
+        # Upload the build files to build folder in project
+      - name: Upload Build Folder
+        if: github.event_name == 'push'
+        uses: actions/upload-artifact@v1
+        with:
+          name: build
+          path: build
+
+        # Create a release
+      - name: Create a Release
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: npx semantic-release
+        env:
+          GITHUG_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name:
           Deploy to Staging
