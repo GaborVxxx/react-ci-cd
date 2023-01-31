@@ -52,7 +52,7 @@ jobs:
           name: build
           path: build
 
-        # Create a release
+        # Create a release +
       - name: Create a Release
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: npx semantic-release
