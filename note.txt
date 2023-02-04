@@ -4,4 +4,4 @@ create another account on GitHub and add the account to the repo and set it us a
 
 trigger new pull
 
-+
+use codecov.io
