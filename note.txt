@@ -6,4 +6,8 @@ trigger new pull
 
 use codecov.io
 
-+
+use husky to format end lint the commit message
+--> https://github.com/commitizen/cz-cli
+
+use commitizm to format commits
+--> https://github.com/conventional-changelog/commitlint
